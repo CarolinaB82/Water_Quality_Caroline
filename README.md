@@ -91,11 +91,27 @@ data/gold/
 
 ```bash
 pip install -r requirements.txt
+```
+
+### 2. Initialisation de la structure du projet
+
+Pour créer automatiquement tous les dossiers et fichiers nécessaires à la première utilisation, lance :
+
+```bash
+python setup_project.py
+```
+
+Cela permet de générer l'arborescence du projet (data/, src/, docs/, etc.) et des fichiers de base.
+
+---
 
 ## 🧱 Lancer le pipeline :
 
+```bash
 python main.py
+```
 
+---
 
 🧮 Requêtes analytiques avec DuckDB
 
