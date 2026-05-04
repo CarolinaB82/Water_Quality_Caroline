@@ -1,6 +1,14 @@
-@"
+# Data (TRÈS IMPORTANT)
 data/
+
+# Parquet / Spark
+*.parquet
+*.crc
+_SUCCESS
+
+# Python
 __pycache__/
 *.pyc
+
+# Env
 .env
-"@ | Set-Content .gitignore
