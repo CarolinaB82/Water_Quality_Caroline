@@ -1,18 +1,21 @@
-from src.ingestion.ingest_analyses import run_ingestion_analyses
-from src.ingestion.ingest_parametres import run_ingestion_parametres
-from src.ingestion.ingest_stations import run_ingestion_stations
+from src.pandas.bronze.ingest_analyses import run_ingestion_analyses
+from src.pandas.bronze.ingest_parametres import run_ingestion_parametres
+from src.pandas.bronze.ingest_stations import run_ingestion_stations
 
-from src.transformation.clean_mesures import run_clean_mesures
-from src.transformation.clean_stations import run_clean_stations
-from src.transformation.build_conformite import run_build_conformite
+from src.pandas.silver.silver_analyses import run_silver_analyses
+from src.pandas.silver.silver_stations import run_silver_stations
+from src.pandas.silver.silver_parametres import run_silver_parametres
 
-from src.gold.build_dimensions import run_build_dimensions
-from src.gold.build_facts import run_build_facts
-from src.gold.build_kpis import run_build_kpis
+from src.pandas.quality.data_quality_checks import run_data_quality_checks
 
+from src.pandas.gold.dim_parametres import run_dim_parametres
+from src.pandas.gold.dim_stations import run_dim_stations
+from src.pandas.gold.dim_temps import run_dim_temps
+from src.pandas.gold.fact_analyses import run_fact_analyses
 
 RUN_BRONZE = False
-RUN_SILVER = True
+RUN_SILVER = False
+RUN_QUALITY = True
 RUN_GOLD = True
 
 
@@ -25,13 +28,17 @@ if __name__ == "__main__":
         run_ingestion_stations()
 
     if RUN_SILVER:
-        run_clean_mesures()
-        run_clean_stations()
-        run_build_conformite()
+        run_silver_stations()
+        run_silver_analyses()
+        run_silver_parametres()
+
+    if RUN_QUALITY:
+        run_data_quality_checks()
 
     if RUN_GOLD:
-        run_build_dimensions()
-        run_build_facts()
-        run_build_kpis()
+        run_dim_stations()
+        run_dim_parametres()
+        run_dim_temps()
+        run_fact_analyses()
 
     print("✅ Pipeline terminé")

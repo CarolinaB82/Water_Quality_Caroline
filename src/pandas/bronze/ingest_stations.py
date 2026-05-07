@@ -6,7 +6,7 @@ import os
 def run_ingestion_stations():
     print("🚀 Ingestion STATIONS / COMMUNES")
 
-    os.makedirs("data/bronze/stations", exist_ok=True)
+    os.makedirs("data/pandas/bronze/stations", exist_ok=True)
 
     files = glob.glob("data/raw/DIS_COM_UDI_*.txt")
     dfs = []
@@ -20,7 +20,7 @@ def run_ingestion_stations():
 
     df_final = pd.concat(dfs, ignore_index=True)
 
-    output_path = "data/bronze/stations/stations.csv"
+    output_path = "data/pandas/bronze/stations/stations.csv"
     df_final.to_csv(output_path, index=False, sep=";")
 
     print(f"✅ Bronze STATIONS créé : {output_path}")

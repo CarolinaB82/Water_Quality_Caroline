@@ -6,7 +6,7 @@ import os
 def run_ingestion_parametres():
     print("🚀 Ingestion PARAMÈTRES / RÉSULTATS")
 
-    os.makedirs("data/bronze/parametres", exist_ok=True)
+    os.makedirs("data/pandas/bronze/parametres", exist_ok=True)
 
     files = glob.glob("data/raw/DIS_RESULT_*.txt")
     dfs = []
@@ -20,7 +20,7 @@ def run_ingestion_parametres():
 
     df_final = pd.concat(dfs, ignore_index=True)
 
-    output_path = "data/bronze/parametres/parametres.csv"
+    output_path = "data/pandas/bronze/parametres/parametres.csv"
     df_final.to_csv(output_path, index=False, sep=";")
 
     print(f"✅ Bronze PARAMÈTRES créé : {output_path}")
