@@ -4,7 +4,8 @@
 
 Mettre en place un pipeline de données moderne basé sur l’architecture médallion (Bronze, Silver, Gold) afin de traiter et analyser la qualité de l’eau en France.
 
-🔁 Vue globale du pipeline
+🔀 Vue globale du pipeline
+
 Sources (Hub’Eau / fichiers)
         ↓
      Bronze
@@ -13,18 +14,24 @@ Sources (Hub’Eau / fichiers)
         ↓
       Gold
         ↓
-Analyse SQL (DuckDB)
+Analyse SQL (DuckDB ou Databricks SQL)
         ↓
 Insights métiers
 
 
-🥉 Couche Bronze — Ingestion
+🚦 Trois pipelines disponibles
+
+- Pipeline Pandas (local, CSV)
+- Pipeline PySpark (local ou Databricks, Parquet)
+- Pipeline Databricks Free Edition (déclenché par API FastAPI/Uvicorn)
+
+
+🟫 Couche Bronze — Ingestion
 
 📥 Données sources
 DIS_PLV : prélèvements / analyses
 DIS_RESULT : résultats des paramètres physico-chimiques
 DIS_COM_UDI : informations sur les communes et réseaux
-
 
 ⚙️ Traitement
 lecture des fichiers .txt
@@ -32,131 +39,44 @@ concaténation multi-années (2024, 2025…)
 ajout de la colonne annee_fichier
 stockage brut sans transformation
 
-
 📁 Sortie
-data/bronze/
-├── analyses/
-├── parametres/
-└── stations/
+- data/pandas/bronze/
+- data/pyspark/bronze/
 
 
-🥈 Couche Silver — Nettoyage & Transformation
+⬜ Couche Silver — Nettoyage & Transformation
 
 🧼 Traitements appliqués
 suppression des valeurs nulles critiques
 suppression des doublons
-sélection des colonnes utiles
-renommage des colonnes
+sélection et renommage des colonnes utiles
 standardisation des formats
-
 
 🔍 Enrichissement
 création d’un indicateur de conformité globale
-séparation des données métiers (mesures, stations, conformité)
-
-
-📁 Sortie
-data/silver/
-├── mesures/
-├── stations/
-└── conformite/
-
-
-
-🥇 Couche Gold — Modélisation & Analyse
-
-📊 Modélisation
-Dimensions
-dim_communes
-dim_temps
-Tables de faits
-fact_conformite
-
-
-📈 KPIs produits
-taux de conformité par commune
-taux de conformité par département
-nombre de prélèvements
-nombre de non-conformités
-évolution temporelle
-
+séparation des données métiers (analyses, paramètres, stations)
 
 📁 Sortie
-data/gold/
-├── dimensions/
-├── facts/
-└── kpis/
+- data/pandas/silver/
+- data/pyspark/silver/
 
 
+🟨 Couche Gold — Modélisation & Analyse
 
-🧮 Couche Analyse — DuckDB (V1 locale)
+📊 Structuration pour l’analyse (dimensions, faits, KPIs)
 
-🎯 Rôle
-
-En l’absence d’un environnement Databricks, une couche d’analyse locale a été mise en place avec DuckDB.
-
-⚙️ Fonctionnement
-les fichiers Gold (CSV) sont chargés comme tables virtuelles
-les requêtes SQL sont stockées dans le dossier sql/
-un script Python (query_duckdb.py) exécute les requêtes
+📁 Sortie
+- data/pandas/gold/
+- data/pyspark/gold/
 
 
-📊 Types d’analyses réalisées
-comparaison 2024 vs 2025
-identification des communes les plus non conformes
-détection des dégradations et améliorations
-calcul de KPI globaux par année
+🌐 API de déploiement (Databricks Free Edition)
+- Déclenchement du pipeline cloud via FastAPI/Uvicorn
+- Variables d’environnement dans .env
+- Orchestration dans api_databricks_free_edition/
 
 
-⚠️ Précautions analytiques
-filtrage des communes avec peu de prélèvements
-prise en compte des biais liés aux petits volumes de données
-
-
-🔄 Évolution prévue
-
-Cette couche sera remplacée par :
-
-Databricks SQL
-tables Delta Lake
-🧠 Logique du pipeline
-séparation claire des responsabilités (Bronze / Silver / Gold)
-conservation des données sources (traçabilité)
-transformation progressive des données
-préparation pour analyse SQL
-abstraction des données via une couche analytique
-⚙️ Orchestration
-
-Le pipeline est orchestré via un script principal :
-
-main.py
-
-Permettant de lancer :
-
-ingestion (Bronze)
-transformation (Silver)
-modélisation (Gold)
-🧪 Qualité des données
-
-Une couche dédiée permet de :
-
-vérifier les colonnes obligatoires
-détecter les doublons
-valider que les tables ne sont pas vides
-
-
-🚀 Évolutions possibles
-intégration avec l’API Hub’Eau
-migration vers Databricks (Delta Lake)
-orchestration avec Databricks Workflows
-monitoring et alerting
-dashboard (Power BI / Databricks SQL)
-
-
-🧩 Conclusion
-
-Cette architecture permet :
-
-une gestion scalable des données
-une analyse fiable de la qualité de l’eau
-une base solide pour des projets data engineering en production
+🔎 Analyse & KPI
+- Requêtes SQL sur les fichiers Parquet (PySpark/Databricks) ou CSV (Pandas)
+- Utilisation de DuckDB ou Databricks SQL
+- Exemples : taux de conformité, top non-conformités, analyses par commune…

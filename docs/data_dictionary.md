@@ -2,7 +2,7 @@
 
 ## Bronze
 
-### `bronze/analyses/analyses.csv`
+### `bronze/analyses/analyses.csv` ou `bronze/analyses/` (Parquet)
 
 Données brutes issues des fichiers `DIS_PLV`.
 
@@ -24,9 +24,7 @@ Données brutes issues des fichiers `DIS_PLV`.
 
 ## Silver
 
-### `silver/mesures/mesures.csv`
-
-Table nettoyée des prélèvements.
+### `silver/analyses/` (Parquet)
 
 | Colonne | Description |
 |---|---|
@@ -34,80 +32,67 @@ Table nettoyée des prélèvements.
 | `code_departement` | Code du département |
 | `code_reseau` | Code du réseau |
 | `code_commune` | Code INSEE commune |
-| `commune` | Nom de la commune |
+| `nom_commune` | Nom de la commune |
 | `date_prelevement` | Date du prélèvement |
 | `conclusion` | Conclusion sanitaire |
 | `conformite_bacterio` | `C` = conforme, autre valeur = non conforme |
 | `conformite_chimique` | `C` = conforme, autre valeur = non conforme |
-| `conformite_globale` | Conforme / Non conforme |
 | `annee_fichier` | Année du fichier source |
 
-### `silver/conformite/conformite.csv`
-
-Table dédiée aux indicateurs de conformité.
+### `silver/parametres/` (Parquet)
 
 | Colonne | Description |
 |---|---|
 | `id_prelevement` | Identifiant du prélèvement |
-| `code_departement` | Code département |
+| `code_parametre` | Code du paramètre |
+| `code_parametresiseeaux` | Code SISEEAUX |
+| `libelle_parametre_maj` | Libellé paramètre (majuscule) |
+| `libelle_parametre_min` | Libellé paramètre (minuscule) |
+| `libelle_parametre_web` | Libellé web |
+| `qualite_parametre` | Qualité |
+| `valeur_traduite` | Valeur numérique |
+| ... | ... |
+
+### `silver/stations/` (Parquet)
+
+| Colonne | Description |
+|---|---|
+| `stations_id` | Identifiant station |
 | `code_commune` | Code INSEE commune |
-| `commune` | Nom de commune |
-| `date_prelevement` | Date du prélèvement |
-| `is_conforme` | 1 si conforme, 0 sinon |
-| `is_non_conforme` | 1 si non conforme, 0 sinon |
+| `nom_commune` | Nom de la commune |
+| `nom_quartier` | Quartier |
+| `code_reseau` | Code réseau |
+| `nom_reseau` | Nom du réseau |
+| `debut_alim` | Date début alimentation |
 
 ---
 
 ## Gold
 
-### `gold/dimensions/dim_communes.csv`
+### `gold/fact_analyses/` (Parquet)
 
 | Colonne | Description |
 |---|---|
-| `code_departement` | Code département |
-| `code_commune` | Code INSEE commune |
-| `commune` | Nom commune |
+| `fact_id` | Identifiant de la ligne de fait |
+| `stations_id` | Identifiant station |
+| `date_id` | Identifiant date |
+| `parametre_id` | Identifiant paramètre |
+| `valeur` | Valeur mesurée |
+| ... | ... |
 
-### `gold/dimensions/dim_temps.csv`
+### `gold/dim_stations/`, `gold/dim_parametres/`, `gold/dim_temps/` (Parquet)
 
-| Colonne | Description |
-|---|---|
-| `date_prelevement` | Date du prélèvement |
-| `annee_fichier` | Année |
-| `mois` | Mois du prélèvement |
-
-### `gold/facts/fact_conformite.csv`
-
-| Colonne | Description |
-|---|---|
-| `id_prelevement` | Identifiant prélèvement |
-| `code_departement` | Code département |
-| `code_commune` | Code commune |
-| `commune` | Nom commune |
-| `date_prelevement` | Date |
-| `is_conforme` | Indicateur binaire de conformité |
-| `is_non_conforme` | Indicateur binaire de non-conformité |
-| `annee_fichier` | Année |
-
-### `gold/kpis/kpi_conformite_commune.csv`
-
-| Colonne | Description |
-|---|---|
-| `code_departement` | Code département |
-| `code_commune` | Code commune |
-| `commune` | Nom commune |
-| `annee_fichier` | Année |
-| `nb_prelevements` | Nombre total de prélèvements |
-| `nb_conformes` | Nombre de prélèvements conformes |
-| `nb_non_conformes` | Nombre de prélèvements non conformes |
-| `taux_conformite` | Pourcentage de conformité |
+Dimensions pour l’analyse (voir scripts gold pour détails).
 
 ---
 
-## Codes de conformité
+## API
 
-| Code | Signification |
-|---|---|
-| `C` | Conforme |
-| `N` | Non conforme |
-| vide / null | Information manquante |
+- Les variables d’environnement attendues : `DATABRICKS_HOST`, `DATABRICKS_TOKEN`, `DATABRICKS_JOB_ID` (dans `.env`)
+- Endpoints principaux : `/` (GET), `/deploy` (POST)
+
+---
+
+## Notes
+- Les fichiers peuvent être au format CSV (pandas) ou Parquet (pyspark/databricks).
+- Les noms de colonnes peuvent varier selon la pipeline utilisée (voir scripts pour détails).

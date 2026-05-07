@@ -4,9 +4,9 @@ Projet de data engineering dédié à l’analyse de la qualité de l’eau pota
 
 ---
 
-## Deux pipelines : Pandas & PySpark
+## Trois pipelines : Pandas, PySpark, Databricks Free Edition
 
-Ce projet propose deux modes d’exécution pour traiter les données :
+Ce projet propose trois modes d’exécution pour traiter les données :
 
 ### 1. Pipeline Pandas (local)
 - Les données brutes (fichiers .txt DIS_PLV, DIS_RESULT, DIS_COM_UDI) sont ingérées, nettoyées et transformées avec Pandas.
@@ -29,11 +29,22 @@ python main.py
 python src/pyspark/main_pyspark.py
 ```
 
+### 3. Pipeline Databricks Free Edition (déclenché par API)
+- Un pipeline Databricks peut être déclenché à distance via une API FastAPI/Uvicorn.
+- L’API appelle un job Databricks défini dans le cloud (Databricks Community/Free Edition).
+- Les variables d’environnement (DATABRICKS_HOST, DATABRICKS_TOKEN, DATABRICKS_JOB_ID) sont à placer dans un fichier `.env` à la racine du projet.
+- Orchestration via le script `api_databricks_free_edition/deployment_api.py`.
+
+**Utilisation :**
+```bash
+uvicorn api_databricks_free_edition.deployment_api:app --reload
+```
+
 ---
 
 ## Données sources
 - Les fichiers .txt doivent être placés dans `data/raw/`.
-- Les deux pipelines utilisent ces mêmes fichiers comme point de départ.
+- Les trois pipelines utilisent ces mêmes fichiers comme point de départ.
 
 ---
 
@@ -41,19 +52,6 @@ python src/pyspark/main_pyspark.py
 - Les fichiers Parquet produits par PySpark (dans `data/pyspark/gold/`) peuvent être analysés avec DuckDB.
 - Place tes requêtes SQL dans le dossier `sql/` et exécute-les via `query_duckdb.py`.
 - Exemples de requêtes pour KPI : nombre d’analyses par commune, taux de conformité, top non-conformités, etc.
-
----
-
-## API de déploiement (FastAPI/Uvicorn)
-- Une API FastAPI permet de déclencher le workflow Databricks à distance.
-- Les variables d’environnement (DATABRICKS_HOST, DATABRICKS_TOKEN, DATABRICKS_JOB_ID) sont à placer dans un fichier `.env` à la racine du projet.
-- Lancement de l’API :
-```bash
-uvicorn api_databricks_free_edition.deployment_api:app --reload
-```
-- Endpoints principaux :
-  - `GET /` : Vérification de l’API
-  - `POST /deploy` : Déclenche le pipeline Databricks
 
 ---
 
@@ -86,6 +84,9 @@ data/
     ├── silver/
     └── gold/
 
+api_databricks_free_edition/
+└── deployment_api.py
+
 ---
 
 ## Installation & initialisation
@@ -102,8 +103,8 @@ python setup_project.py
 ---
 
 ## Résumé
-- Deux pipelines (Pandas et PySpark) exploitant les mêmes données brutes.
-- Résultats exploitables en CSV (pandas) ou Parquet (pyspark).
+- Trois pipelines (Pandas, PySpark, Databricks Free Edition) exploitant les mêmes données brutes.
+- Résultats exploitables en CSV (pandas) ou Parquet (pyspark/databricks).
 - Analyse possible avec DuckDB ou Databricks SQL.
 - API de déploiement pour Databricks (FastAPI/Uvicorn).
 - Architecture médallion (bronze, silver, gold).
