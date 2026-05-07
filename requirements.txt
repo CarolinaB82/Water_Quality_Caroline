@@ -5,3 +5,6 @@ duckdb
 great-expectations
 delta-spark
 requests
+uvicorn
+python-dotenv
+fastapi

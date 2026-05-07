@@ -1,3 +1,7 @@
+# En lien avec mon .env, j'ai ajouté les variables d'environnement pour Databricks afin de pouvoir exécuter le pipeline PySpark directement depuis mon environnement local. Cela me permettra de lancer les scripts PySpark qui se connectent à Databricks sans
+
+
+
 import great_expectations as gx
 
 from src.pyspark.config.spark_session import get_spark_session

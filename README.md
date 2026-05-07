@@ -21,7 +21,7 @@ python main.py
 ### 2. Pipeline PySpark (local ou Databricks)
 - Les mêmes fichiers .txt sont utilisés comme source.
 - Le traitement s’effectue avec PySpark, pour un passage facile à Databricks ou à un environnement distribué.
-- Les résultats sont produits dans data/pyspark/ (bronze, silver, gold).
+- Les résultats sont produits au format Parquet dans data/pyspark/ (bronze, silver, gold).
 - Orchestration via le script `src/pyspark/main_pyspark.py`.
 
 **Utilisation :**
@@ -34,6 +34,26 @@ python src/pyspark/main_pyspark.py
 ## Données sources
 - Les fichiers .txt doivent être placés dans `data/raw/`.
 - Les deux pipelines utilisent ces mêmes fichiers comme point de départ.
+
+---
+
+## Analyse et KPI avec DuckDB
+- Les fichiers Parquet produits par PySpark (dans `data/pyspark/gold/`) peuvent être analysés avec DuckDB.
+- Place tes requêtes SQL dans le dossier `sql/` et exécute-les via `query_duckdb.py`.
+- Exemples de requêtes pour KPI : nombre d’analyses par commune, taux de conformité, top non-conformités, etc.
+
+---
+
+## API de déploiement (FastAPI/Uvicorn)
+- Une API FastAPI permet de déclencher le workflow Databricks à distance.
+- Les variables d’environnement (DATABRICKS_HOST, DATABRICKS_TOKEN, DATABRICKS_JOB_ID) sont à placer dans un fichier `.env` à la racine du projet.
+- Lancement de l’API :
+```bash
+uvicorn api_databricks_free_edition.deployment_api:app --reload
+```
+- Endpoints principaux :
+  - `GET /` : Vérification de l’API
+  - `POST /deploy` : Déclenche le pipeline Databricks
 
 ---
 
@@ -81,15 +101,11 @@ python setup_project.py
 
 ---
 
-## Requêtes analytiques
-- Les résultats produits (CSV ou Parquet) peuvent être analysés avec DuckDB (local) ou Databricks SQL.
-- Les requêtes SQL sont dans le dossier `sql/`.
-
----
-
 ## Résumé
 - Deux pipelines (Pandas et PySpark) exploitant les mêmes données brutes.
-- Adapté à un usage local ou cloud (Databricks).
+- Résultats exploitables en CSV (pandas) ou Parquet (pyspark).
+- Analyse possible avec DuckDB ou Databricks SQL.
+- API de déploiement pour Databricks (FastAPI/Uvicorn).
 - Architecture médallion (bronze, silver, gold).
 - Contrôles de qualité intégrés.
 
