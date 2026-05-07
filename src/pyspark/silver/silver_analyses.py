@@ -13,8 +13,8 @@ def run_silver_analyses():
     spark = get_spark_session("WaterQuality-Silver-Analyses")
 
     try:
-        input_path = "data/bronze/pyspark/analyses"
-        output_path = "data/silver/pyspark/analyses"
+        input_path = "data/pyspark/bronze/analyses"
+        output_path = "data/pyspark/silver/analyses"
 
         df = spark.read.parquet(input_path)
 

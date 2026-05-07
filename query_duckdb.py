@@ -3,20 +3,33 @@ from pathlib import Path
 
 con = duckdb.connect()
 
-# Création de "fausses tables" DuckDB à partir de tes CSV Gold
+# Création de vues DuckDB à partir des CSV Gold (PySpark)
 con.execute("""
-CREATE OR REPLACE VIEW gold_kpi_conformite_commune AS
+CREATE OR REPLACE VIEW dim_stations AS
 SELECT *
-FROM read_csv_auto('data/gold/kpis/kpi_conformite_commune.csv', delim=';');
+FROM read_csv_auto('data/pyspark/gold/dim_stations.csv', delim=';');
 """)
 
 con.execute("""
-CREATE OR REPLACE VIEW gold_fact_conformite AS
+CREATE OR REPLACE VIEW dim_temps AS
 SELECT *
-FROM read_csv_auto('data/gold/facts/fact_conformite.csv', delim=';');
+FROM read_csv_auto('data/pyspark/gold/dim_temps.csv', delim=';');
+""")
+
+con.execute("""
+CREATE OR REPLACE VIEW dim_parametres AS
+SELECT *
+FROM read_csv_auto('data/pyspark/gold/dim_parametres.csv', delim=';');
+""")
+
+con.execute("""
+CREATE OR REPLACE VIEW fact_analyses AS
+SELECT *
+FROM read_csv_auto('data/pyspark/gold/fact_analyses.csv', delim=';');
 """)
 
 
+# Exemple d'exécution de requêtes SQL stockées dans le dossier sql/
 def run_sql_file(title, filepath):
     print("\n" + "=" * 90)
     print(title)
@@ -26,23 +39,5 @@ def run_sql_file(title, filepath):
     result = con.sql(query)
     print(result)
 
-
-run_sql_file(
-    "KPI CONFORMITÉ COMMUNE",
-    "sql/kpi_conformite_commune.sql"
-)
-
-run_sql_file(
-    "TENDANCE PARAMÈTRES / NON-CONFORMITÉS",
-    "sql/tendance_parametres.sql"
-)
-
-run_sql_file(
-    "TOP NON-CONFORMES",
-    "sql/top_non_conformes.sql"
-)
-
-run_sql_file(
-    "COMPARATIF 2024 VS 2025",
-    "sql/comparatif_2024_2025.sql"
-)
+# Exemple d'exécution de requêtes SQL stockées dans le dossier sql/
+run_sql_file("Nombre d’analyses par année et par commune", "sql/nb_analyses_par_annee_par_commune.sql")

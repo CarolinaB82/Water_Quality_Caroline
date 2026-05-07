@@ -12,10 +12,10 @@ def run_gold_fact_analyses():
     spark = get_spark_session("WaterQuality-Gold-FactAnalyses")
 
     try:
-        analyses_path = "data/silver/pyspark/analyses"
-        parametres_path = "data/silver/pyspark/parametres"
-        dim_temps_path = "data/gold/pyspark/dim_temps"
-        output_path = "data/gold/pyspark/fact_analyses"
+        analyses_path = "data/pyspark/silver/analyses"
+        parametres_path = "data/pyspark/silver/parametres"
+        dim_temps_path = "data/pyspark/gold/dim_temps"
+        output_path = "data/pyspark/gold/fact_analyses"
 
         analyses = spark.read.parquet(analyses_path)
         parametres = spark.read.parquet(parametres_path)

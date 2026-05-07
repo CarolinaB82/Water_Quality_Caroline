@@ -5,8 +5,8 @@ def run_gold_dim_parametres():
     spark = get_spark_session("WaterQuality-Gold-DimParametres")
 
     try:
-        input_path = "data/silver/pyspark/parametres"
-        output_path = "data/gold/pyspark/dim_parametres"
+        input_path = "data/pyspark/silver/parametres"
+        output_path = "data/pyspark/gold/dim_parametres"
 
         df = spark.read.parquet(input_path)
 

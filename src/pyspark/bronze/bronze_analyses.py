@@ -34,7 +34,7 @@ def run_bronze_analyses():
 
         df_final.write \
             .mode("overwrite") \
-            .parquet("data/bronze/pyspark/analyses")
+            .parquet("data/pyspark/bronze/analyses")
 
         print("✅ Bronze PySpark Analyses OK")
 

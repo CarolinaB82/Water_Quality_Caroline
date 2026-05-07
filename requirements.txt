@@ -1,4 +1,7 @@
+# Dépendances principales pour le projet Water Quality (pandas & pyspark)
 pandas
 pyspark
 duckdb
 great-expectations
+delta-spark
+requests

@@ -15,8 +15,8 @@ def run_silver_stations():
     spark = get_spark_session("WaterQuality-Silver-Stations")
 
     try:
-        input_path = "data/bronze/pyspark/stations"
-        output_path = "data/silver/pyspark/stations"
+        input_path = "data/pyspark/bronze/stations"
+        output_path = "data/pyspark/silver/stations"
 
         df = spark.read.parquet(input_path)
 

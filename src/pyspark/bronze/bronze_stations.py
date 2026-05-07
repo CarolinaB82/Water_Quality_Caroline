@@ -29,7 +29,7 @@ def run_bronze_stations():
             )
         )
 
-        output_path = "data/bronze/pyspark/stations"
+        output_path = "data/pyspark/bronze/stations"
 
         df_final.write \
             .mode("overwrite") \
