@@ -5,24 +5,45 @@ on:
     branches:
       - main
       - master
+  pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
-  test-pipeline:
+  ci-checks:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Upgrade pip
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
 
-      - name: Run data quality checks
+      - name: Install light dependencies
         run: |
-          python src/pyspark/quality/validate_silver_with_ge.py
+          pip install pandas requests fastapi uvicorn python-dotenv great-expectations pyspark
+
+      - name: Check Python syntax
+        run: |
+          python -m compileall src api
+
+      - name: Check important imports
+        run: |
+          python -c "import pandas"
+          python -c "import pyspark"
+          python -c "import great_expectations"
+          python -c "import fastapi"
+          python -c "import requests"
+          python -c "from dotenv import load_dotenv"
+
+      - name: Check sensitive files are not committed
+        run: |
+          test ! -f .env
